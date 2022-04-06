@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RegisterForm from './components/RegisterForm';
 import { useNavigate } from "react-router-dom";
 import Chat from './components/Chat';
+import ResetForm from "./components/ResetForm";
 
 
 function App() {
@@ -13,8 +14,8 @@ function App() {
 
     // const navigate = useNavigate();
 
-    //  useEffect(() => { 
-    //     if (!userInfo) { 
+    //  useEffect(() => {
+    //     if (!userInfo) {
     //      navigate("/login")
     //    }
     //  }, [navigate, userInfo]);
@@ -23,10 +24,11 @@ function App() {
         <Router>
             <Routes>
                 <Route path='/login' element={<LoginForm />} />
+                <Route path='/reset' element={<ResetForm />} />
                 <Route path='/register' element={<RegisterForm />} />
                 <Route path='/chat' element={ <Chat />} />
-            </Routes>       
-            </Router>
+            </Routes>
+        </Router>
     );
 }
 
