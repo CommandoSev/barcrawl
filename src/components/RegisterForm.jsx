@@ -52,10 +52,6 @@ function RegisterForm() {
             if (userExists && (localStorage.getItem('username') && localStorage.getItem('username') === username)) {
                 setError(`Username is taken`)
             }
-            // if email already exists
-            if (userExists && (localStorage.getItem('email') && localStorage.getItem('email') === email)) {
-                setError(`An account already exists under this email`)
-            }
             console.log('worked2');
             // if user doesnt exist, create a new user
             await axios.post('https://api.chatengine.io/users/',
