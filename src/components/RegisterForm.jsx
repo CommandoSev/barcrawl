@@ -43,6 +43,7 @@ function RegisterForm() {
 
         try {
             //fetch the current user if it exists
+            setError(`oops, something went wrong`)
             const userExists = await axios.get('https://api.chatengine.io/users/', {
                 headers: authObject
             });
@@ -66,7 +67,6 @@ function RegisterForm() {
 
         } catch (error) {
             console.log(error);
-            setError(`oops, something went wrong`)
         }
 
     }
