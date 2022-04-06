@@ -35,7 +35,7 @@ function LoginForm() {
             const doc = await getDocs(q);
             const data = doc.docs[0].data();
             setUsername(data.username);
-            logInWithEmailAndPassword(email, password)
+            await logInWithEmailAndPassword(email, password)
             await axios.get('https://api.chatengine.io/chats', { headers: authObject });
             localStorage.setItem('username', username);
             localStorage.setItem('email', email);

@@ -9,7 +9,7 @@ function RegisterForm() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
-    const [confirmPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -62,7 +62,7 @@ function RegisterForm() {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
             //redirecting them to the login page to login
-            // registerWithEmailAndPassword(username, email, password)
+            await registerWithEmailAndPassword(username, email, password)
 
         } catch (error) {
             console.log(error);
@@ -78,6 +78,7 @@ function RegisterForm() {
                     <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="input" placeholder='Username' required />
                     <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="input" placeholder='Email' required />
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" placeholder='Password' required />
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="input" placeholder='Confirm Password' required />
                     <div align="center">
                         <button type="submit" className='button'>
                             <span>Start Chatting</span>
