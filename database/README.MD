@@ -4,7 +4,6 @@
 docker-compose rm -f
 
 # Start up the docker compose image
-docker-compose pull
 docker-compose up --build -d
 
 # Shut it down after it has been run
