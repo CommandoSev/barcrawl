@@ -1,0 +1,23 @@
+services:
+  postgresservice:
+    image: postgresservice-image
+    build:
+      context: .
+      dockerfile: postgres/Dockerfile
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+
+  # managerservice:
+  #   image: managerservice-img
+  #   build:
+  #     context: .
+  #     dockerfile: manager/Dockerfile
+  #   ports:
+  #     - "5433:5433"
+  #   networks:
+  #     - microservices-net
+
+networks:
+  microservices-net: {}
