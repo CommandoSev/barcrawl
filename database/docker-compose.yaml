@@ -9,15 +9,25 @@ services:
     networks:
       - microservices-net
 
-  # managerservice:
-  #   image: managerservice-img
+  managerservice:
+    image: managerservice-image
+    build:
+      context: .
+      dockerfile: manager/Dockerfile
+    ports:
+      - "5433:5433"
+    networks:
+      - microservices-net
+
+  # testservice:
+  #   image: testservice-image
   #   build:
   #     context: .
-  #     dockerfile: manager/Dockerfile
+  #     dockerfile: test/Dockerfile
   #   ports:
-  #     - "5433:5433"
+  #     - "5434:5434"
   #   networks:
   #     - microservices-net
 
 networks:
-  microservices-net: {}
+  microservices-net:
