@@ -8,6 +8,12 @@ services:
       - "5432:5432"
     networks:
       - microservices-net
+    healthcheck:
+      #CHANGE 1: this command checks if the database is ready, right on the source db server
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   managerservice:
     image: managerservice-image
@@ -18,16 +24,10 @@ services:
       - "5433:5433"
     networks:
       - microservices-net
-
-  # testservice:
-  #   image: testservice-image
-  #   build:
-  #     context: .
-  #     dockerfile: test/Dockerfile
-  #   ports:
-  #     - "5434:5434"
-  #   networks:
-  #     - microservices-net
+    depends_on:
+      #CHANGE 2: it prevents issuing a request while the server is starting to depend on the healthy status of postgres-db 
+      postgresservice:
+        condition: service_healthy
 
 networks:
-  microservices-net:
+  microservices-net: {}

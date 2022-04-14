@@ -10,6 +10,10 @@ docker-compose up --build -d
 docker-compose stop -t 1
 
 
+# Stop the network
+docker-compose down
+
+
 
 ## postgres
 
