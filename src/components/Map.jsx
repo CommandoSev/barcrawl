@@ -3,13 +3,18 @@ import React, { useEffect, useRef } from 'react';
 // test users object, replace this with users from database
 const users = [{"user_id": 2,
                 "username": "Bob",
-                "icon": 'https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Flag--Right-Chartreuse.png',
-                "location": [18.516075, 10.219820]},
+                "icon": 'https://i.pinimg.com/originals/85/78/bf/8578bfd439ef6ee41e103ae82b561986.png',
+                "location": [39.653657, -3.276112]},
                 
                 {"user_id": 3,
                 "username": "John",
-                "icon": 'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_Marker_Outside_Chartreuse.png',
-                "location": [18.516075, 10.229820]}
+                "icon": 'https://pngset.com/images/redstone-minecraft-pixel-art-download-maroon-first-aid-sweets-food-transparent-png-1062567.png',
+                "location": [39.753657, -3.277112]},
+
+                {"user_id": 4,
+                "username": "Cena",
+                "icon": 'https://freepngimg.com/download/minecraft/11-2-minecraft-diamond-png.png',
+                "location": [39.854657, -3.275112]}
 ];
 
 const Map = () => {
