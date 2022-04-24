@@ -6,6 +6,8 @@ import RegisterForm from './components/RegisterForm';
 import { useNavigate } from "react-router-dom";
 import Chat from './components/Chat';
 import ResetForm from "./components/ResetForm";
+import Map from "./components/Map";
+import MapPage from './components/MapPage';
 
 
 function App() {
@@ -27,6 +29,7 @@ function App() {
                 <Route path='/reset' element={<ResetForm />} />
                 <Route path='/register' element={<RegisterForm />} />
                 <Route path='/chat' element={ <Chat />} />
+                <Route path='/map' element={ <MapPage />} />
             </Routes>
         </Router>
     );
