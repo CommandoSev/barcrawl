@@ -1,5 +1,5 @@
 
-from flask import Flask, request
+from flask import Flask, request, Response
 import sqlalchemy as sql
 from sqlalchemy import text, insert
 from datetime import datetime, timedelta
@@ -15,88 +15,138 @@ app = Flask(__name__)
 @app.route("/get_events", methods=['GET'])
 def get_events():
 
-    sql_query = "SELECT * FROM events"
+    try:
 
-    with engine.connect() as conn:
-        resultproxy = conn.execute(text(sql_query))
-        conn.close()
+        sql_query = "SELECT * FROM events"
 
-    d, a = {}, []
-    for rowproxy in resultproxy:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-        for column, value in rowproxy.items():
-            # build up the dictionary
-            d = {**d, **{column: value}}
-        a.append(d)
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
 
-    json_format = json.dumps(a, default=str)
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
 
-    return json_format
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
 
 @app.route("/get_attendee_mapping", methods=['GET'])
 def get_attendee_mapping():
 
-    sql_query = "SELECT * FROM attendee_mapping"
+    try:
 
-    with engine.connect() as conn:
-        resultproxy = conn.execute(text(sql_query))
-        conn.close()
+        sql_query = "SELECT * FROM attendee_mapping"
 
-    d, a = {}, []
-    for rowproxy in resultproxy:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-        for column, value in rowproxy.items():
-            # build up the dictionary
-            d = {**d, **{column: value}}
-        a.append(d)
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
 
-    json_format = json.dumps(a, default=str)
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
 
-    return json_format
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
 
 @app.route("/get_users", methods=['GET'])
 def get_users():
 
-    sql_query = "SELECT * FROM users"
+    try:
 
-    with engine.connect() as conn:
-        resultproxy = conn.execute(text(sql_query))
-        conn.close()
+        sql_query = "SELECT * FROM users"
 
-    d, a = {}, []
-    for rowproxy in resultproxy:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-        for column, value in rowproxy.items():
-            # build up the dictionary
-            d = {**d, **{column: value}}
-        a.append(d)
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
 
-    json_format = json.dumps(a, default=str)
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
 
-    return json_format
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
 
 @app.route("/get_user", methods=['GET'])
 def get_user():
 
-    user_id = request.args.get('user_id')
+    try:
 
-    sql_query = "SELECT * FROM users WHERE user_id = {}".format(user_id)
+        user_id = request.args.get('user_id')
 
-    with engine.connect() as conn:
-        resultproxy = conn.execute(text(sql_query))
-        conn.close()
+        sql_query = "SELECT * FROM users WHERE user_id = {}".format(user_id)
 
-    d, a = {}, []
-    for rowproxy in resultproxy:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-        for column, value in rowproxy.items():
-            # build up the dictionary
-            d = {**d, **{column: value}}
-        a.append(d)
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
 
-    json_format = json.dumps(a, default=str)
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
+        
+        if len(a) < 1:
+            raise ValueError('Invalid user_id')
 
-    return json_format
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
+
+@app.route("/update_user_location", methods=['POST'])
+def update_user_location():
+
+    try:
+
+        user_id = request.args.get('user_id')
+        location = [float(request.args.get('lng')), float(request.args.get('lat'))]
+
+        sql_query = "UPDATE users SET location = :location WHERE user_id = {}".format(user_id)
+
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query), location=location)
+            conn.close()
+
+        if resultproxy.rowcount < 1:
+            raise ValueError('Invalid user_id')
+
+        return Response(status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
 
 @app.route("/add_event", methods=['GET'])
 def add_event():
@@ -118,25 +168,34 @@ def add_event():
 @app.route("/get_attendee_locations", methods=['GET'])
 def get_attendee_locations():
 
-    event_id = request.args.get('event_id')
+    try:
 
-    sql_query = "SELECT * FROM users WHERE user_id IN (SELECT attendee_id FROM attendee_mapping WHERE event_id = {})".format(event_id)
+        event_id = request.args.get('event_id')
 
-    with engine.connect() as conn:
-        resultproxy = conn.execute(text(sql_query))
-        conn.close()
+        sql_query = "SELECT * FROM users WHERE user_id IN (SELECT attendee_id FROM attendee_mapping WHERE event_id = {})".format(event_id)
 
-    d, a = {}, []
-    for rowproxy in resultproxy:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-        for column, value in rowproxy.items():
-            # build up the dictionary
-            d = {**d, **{column: value}}
-        a.append(d)
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
 
-    json_format = json.dumps(a, default=str)
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
 
-    return json_format
+        if resultproxy.rowcount < 1:
+            raise ValueError('Invalid user_id')
+
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
 
 
 # # managerservice:5433/add_event?event_id=1&owner_id=1
