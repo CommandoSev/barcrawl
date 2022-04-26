@@ -7,8 +7,8 @@ CREATE TABLE users (
     );
 
 CREATE TABLE attendee_mapping (
-    attendee_id INTEGER, 
-    event_id INTEGER,
+    attendee_id UUID, 
+    event_id UUID,
     PRIMARY KEY (attendee_id, event_id)
     );
 
@@ -22,14 +22,6 @@ CREATE TABLE events (
     start_date TIMESTAMPTZ,
     PRIMARY KEY (event_id)
     );
-
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0002, 0001);
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0003, 0001);
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0004, 0001);
-
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0003, 0002);
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0004, 0002);
-INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (0005, 0002);
 
 INSERT INTO users (username, icon, location) VALUES ('alice', 'icon1', '{1.0, 2.0}');
 INSERT INTO users (username, icon, location) VALUES ('bob', 'icon1', '{2.0, 3.0}');

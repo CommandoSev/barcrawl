@@ -224,6 +224,26 @@ def get_attendee_mapping():
 
         return Response(e, mimetype='text/json', status=500)
 
+@app.route("/set_attendee_mapping", methods=['POST'])
+def set_attendee_mapping():
+    
+    try:
+
+        attendee_id = request.args.get('attendee_id')
+        event_id = request.args.get('event_id')
+
+        sql_query = "INSERT INTO attendee_mapping (attendee_id, event_id) VALUES (:attendee_id, :event_id);"
+
+        with engine.connect() as conn:
+                conn.execute(text(sql_query), attendee_id=attendee_id, event_id=event_id)
+                conn.close()
+            
+        return Response(status=200)
+    
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
+
 @app.route("/get_attendee_locations", methods=['GET'])
 def get_attendee_locations():
 
@@ -231,10 +251,10 @@ def get_attendee_locations():
 
         event_id = request.args.get('event_id')
 
-        sql_query = "SELECT * FROM users WHERE user_id IN (SELECT attendee_id FROM attendee_mapping WHERE event_id = {})".format(event_id)
+        sql_query = "SELECT * FROM users WHERE user_id IN (SELECT attendee_id FROM attendee_mapping WHERE event_id = :event_id)"
 
         with engine.connect() as conn:
-            resultproxy = conn.execute(text(sql_query))
+            resultproxy = conn.execute(text(sql_query), event_id=event_id)
             conn.close()
 
         d, a = {}, []
