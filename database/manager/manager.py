@@ -39,6 +39,38 @@ def get_events():
 
         return Response(e, mimetype='text/json', status=500)
 
+@app.route("/get_event", methods=['GET'])
+def get_event():
+
+    try:
+
+        event_id = request.args.get('event_id')
+
+        sql_query = "SELECT * FROM events WHERE event_id = {}".format(event_id)
+
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
+
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
+        
+        if len(a) < 1:
+            raise ValueError('Invalid user_id')
+
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
+
 @app.route("/get_attendee_mapping", methods=['GET'])
 def get_attendee_mapping():
 
@@ -131,7 +163,7 @@ def update_user_location():
     try:
 
         user_id = request.args.get('user_id')
-        location = [float(request.args.get('lng')), float(request.args.get('lat'))]
+        location = [float(request.args.get('lat')), float(request.args.get('lng'))]
 
         sql_query = "UPDATE users SET location = :location WHERE user_id = {}".format(user_id)
 
