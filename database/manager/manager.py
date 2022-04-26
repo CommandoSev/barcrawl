@@ -4,6 +4,7 @@ import sqlalchemy as sql
 from sqlalchemy import text, insert
 from datetime import datetime, timedelta
 import json
+import sys
 
 DATABASE_URL = "postgresql://postgres:password@postgresservice/postgres"
 engine = sql.create_engine(DATABASE_URL)
@@ -46,10 +47,10 @@ def get_event():
 
         event_id = request.args.get('event_id')
 
-        sql_query = "SELECT * FROM events WHERE event_id = {}".format(event_id)
+        sql_query = "SELECT * FROM events WHERE event_id = :event_id"
 
         with engine.connect() as conn:
-            resultproxy = conn.execute(text(sql_query))
+            resultproxy = conn.execute(text(sql_query), event_id=event_id)
             conn.close()
 
         d, a = {}, []
@@ -71,29 +72,24 @@ def get_event():
 
         return Response(e, mimetype='text/json', status=500)
 
-@app.route("/get_attendee_mapping", methods=['GET'])
-def get_attendee_mapping():
-
+@app.route("/set_event", methods=['POST'])
+def set_event():
+    
     try:
 
-        sql_query = "SELECT * FROM attendee_mapping"
+        owner_id = request.args.get('owner_id')
+        start_location = json.loads(request.args.get('start_location'))
+        waypoints = json.loads(request.args.get('waypoints'))
+        end_location = json.loads(request.args.get('end_location'))
+
+        sql_query = "INSERT INTO events (owner_id, start_location, waypoints, end_location, creation_date, start_date) VALUES (:owner_id, :strt, :way, :endl, CURRENT_TIMESTAMP, (CURRENT_TIMESTAMP - interval '10 day'));"
 
         with engine.connect() as conn:
-            resultproxy = conn.execute(text(sql_query))
-            conn.close()
-
-        d, a = {}, []
-        for rowproxy in resultproxy:
-            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
-            for column, value in rowproxy.items():
-                # build up the dictionary
-                d = {**d, **{column: value}}
-            a.append(d)
-
-        json_format = json.dumps(a, default=str)
-
-        return Response(json_format, mimetype='text/json', status=200)
-
+                conn.execute(text(sql_query), owner_id=owner_id, strt=start_location, way=waypoints, endl=end_location)
+                conn.close()
+            
+        return Response(status=200)
+    
     except Exception as e:
 
         return Response(e, mimetype='text/json', status=500)
@@ -132,10 +128,10 @@ def get_user():
 
         user_id = request.args.get('user_id')
 
-        sql_query = "SELECT * FROM users WHERE user_id = {}".format(user_id)
+        sql_query = "SELECT * FROM users WHERE user_id = :user_id"
 
         with engine.connect() as conn:
-            resultproxy = conn.execute(text(sql_query))
+            resultproxy = conn.execute(text(sql_query), user_id=user_id)
             conn.close()
 
         d, a = {}, []
@@ -157,18 +153,39 @@ def get_user():
 
         return Response(e, mimetype='text/json', status=500)
 
+@app.route("/set_user", methods=['POST'])
+def set_user():
+    
+    try:
+
+        username = request.args.get('username') 
+        icon = request.args.get('icon')
+        location = json.loads(request.args.get('location'))
+
+        sql_query = "INSERT INTO users (username, icon, location) VALUES (:username, :icon, :location);"
+
+        with engine.connect() as conn:
+                conn.execute(text(sql_query), username=username, icon=icon, location=location)
+                conn.close()
+            
+        return Response(status=200)
+    
+    except Exception as e:
+
+        return Response(e, mimetype='text/json', status=500)
+
 @app.route("/update_user_location", methods=['POST'])
 def update_user_location():
 
-    try:
+    # try:
 
         user_id = request.args.get('user_id')
-        location = [float(request.args.get('lat')), float(request.args.get('lng'))]
+        location = json.loads(request.args.get('location'))
 
-        sql_query = "UPDATE users SET location = :location WHERE user_id = {}".format(user_id)
+        sql_query = "UPDATE users SET location = :location WHERE user_id = :user_id"
 
         with engine.connect() as conn:
-            resultproxy = conn.execute(text(sql_query), location=location)
+            resultproxy = conn.execute(text(sql_query), location=location, user_id=user_id)
             conn.close()
 
         if resultproxy.rowcount < 1:
@@ -176,26 +193,36 @@ def update_user_location():
 
         return Response(status=200)
 
+    # except Exception as e:
+
+    #     return Response(e, mimetype='text/json', status=500)
+
+@app.route("/get_attendee_mapping", methods=['GET'])
+def get_attendee_mapping():
+
+    try:
+
+        sql_query = "SELECT * FROM attendee_mapping"
+
+        with engine.connect() as conn:
+            resultproxy = conn.execute(text(sql_query))
+            conn.close()
+
+        d, a = {}, []
+        for rowproxy in resultproxy:
+            # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+            for column, value in rowproxy.items():
+                # build up the dictionary
+                d = {**d, **{column: value}}
+            a.append(d)
+
+        json_format = json.dumps(a, default=str)
+
+        return Response(json_format, mimetype='text/json', status=200)
+
     except Exception as e:
 
         return Response(e, mimetype='text/json', status=500)
-
-@app.route("/add_event", methods=['GET'])
-def add_event():
-    event_id = 1
-    owner_id = 1
-    start_location = [0, 0]
-    waypoints = [[0, 20],[20, 20],[40, 20]]
-    end_location = [40, 40]
-    creation_date = datetime.now()
-
-    sql_query = "INSERT INTO events (event_id, owner_id, start_location, waypoints, end_location, creation_date, start_date) VALUES ({}, {}, :strt, :way, :endl, CURRENT_TIMESTAMP, (CURRENT_TIMESTAMP - interval '10 day'));".format(event_id, owner_id, creation_date)
-
-    with engine.connect() as conn:
-            conn.execute(text(sql_query), strt=start_location, way=waypoints, endl=end_location)
-            conn.close()
-        
-    return 'Made Event'
 
 @app.route("/get_attendee_locations", methods=['GET'])
 def get_attendee_locations():
