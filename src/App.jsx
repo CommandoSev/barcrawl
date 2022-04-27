@@ -5,7 +5,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RegisterForm from './components/RegisterForm';
 import { useNavigate } from "react-router-dom";
 import Chat from './components/Chat';
-import ResetForm from "./components/ResetForm";
+import NavBar from './components/NavBar';
+import Privacy from './components/Privacy';
+import Terms from './components/Terms';
 
 
 function App() {
@@ -22,11 +24,13 @@ function App() {
 
     return (
         <Router>
+            <NavBar />
             <Routes>
-                <Route path='/login' element={<LoginForm />} />
-                <Route path='/reset' element={<ResetForm />} />
+                <Route path='/' element={<LoginForm />} />
                 <Route path='/register' element={<RegisterForm />} />
-                <Route path='/chat' element={ <Chat />} />
+                <Route path='/chat' element={<Chat />} />
+                <Route path='/privacy' element={<Privacy />} />
+                <Route path='/terms' element={ <Terms />} />
             </Routes>
         </Router>
     );

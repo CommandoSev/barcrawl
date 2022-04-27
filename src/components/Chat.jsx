@@ -14,7 +14,7 @@ function Chat() {
       }, [navigate, userInfo]);
     return (
         <ChatEngine
-            height="100vh"
+            height="90vh"
             projectID="327ef6ee-a3b0-4e52-829e-9cd277e8e4a5"
             userName={localStorage.getItem('username')}
             userSecret={localStorage.getItem('password')}

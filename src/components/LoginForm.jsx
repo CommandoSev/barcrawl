@@ -2,15 +2,11 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Link, useNavigate} from "react-router-dom";
-import { auth, logInWithEmailAndPassword, db } from "./firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState("");
-    const [user] = useAuthState(auth);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -31,11 +27,7 @@ function LoginForm() {
         };
 
         try {
-            const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-            const doc = await getDocs(q);
-            const data = doc.docs[0].data();
-            setUsername(data.username);
-            await logInWithEmailAndPassword(email, password)
+            
             await axios.get('https://api.chatengine.io/chats', { headers: authObject });
             localStorage.setItem('username', username);
             localStorage.setItem('email', email);
@@ -58,12 +50,9 @@ function LoginForm() {
                     <div align="center">
                         <button type="submit"
                                 className='button'
-                                onClick={() => logInWithEmailAndPassword(email, password)}>
+                                onClick={() => handleSubmit()}>
                             <span>Login</span>
                         </button>
-                        <div>
-                            <Link to="/reset">Forgot Password</Link>
-                        </div>
                     </div>
                     <h2 className='error'>New User ? <Link to="/register">Register Here</Link></h2>
                     <h2 className='error'>{error}</h2>

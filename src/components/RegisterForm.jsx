@@ -2,8 +2,6 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
-import { auth, registerWithEmailAndPassword } from "./firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 function RegisterForm() {
     const [username, setUsername] = useState('');
@@ -63,7 +61,6 @@ function RegisterForm() {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
             //redirecting them to the login page to login
-            await registerWithEmailAndPassword(username, email, password)
 
         } catch (error) {
             console.log(error);
