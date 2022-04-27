@@ -8,6 +8,7 @@ import Chat from './components/Chat';
 import NavBar from './components/NavBar';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
+import MapPage from './components/MapPage'
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                 <Route path='/chat' element={<Chat />} />
                 <Route path='/privacy' element={<Privacy />} />
                 <Route path='/terms' element={ <Terms />} />
+                <Route path='/map' element={ <MapPage />} />
             </Routes>
         </Router>
     );
