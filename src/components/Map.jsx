@@ -1,20 +1,54 @@
 import React, { useEffect, useRef } from 'react';
+import end_point from '../images/Red_circle.png';
+import med_point from '../images/Grey_circle.png';
+import start_point from '../images/Green_circle.png';
+import user_icon from '../images/example_user_icon.png';
+
+
 
 // test users object, replace this with users from database
 const users = [{"user_id": 2,
                 "username": "Bob",
-                "icon": 'https://i.pinimg.com/originals/85/78/bf/8578bfd439ef6ee41e103ae82b561986.png',
-                "location": [39.653657, -3.276112]},
+                "icon": '',
+                "location": [21, 20]},
                 
                 {"user_id": 3,
                 "username": "John",
-                "icon": 'https://pngset.com/images/redstone-minecraft-pixel-art-download-maroon-first-aid-sweets-food-transparent-png-1062567.png',
-                "location": [39.753657, -3.277112]},
+                "icon": '',
+                "location": [20, 21]},
 
                 {"user_id": 4,
                 "username": "Cena",
-                "icon": 'https://freepngimg.com/download/minecraft/11-2-minecraft-diamond-png.png',
-                "location": [39.854657, -3.275112]}
+                "icon": '',
+                "location": [22, 21]}
+];
+
+// test event locations object, replace with object from database
+const event_locations = [
+  {
+      "event_id": 2,
+      "owner_id": 1,
+      "start_location": [
+          20.0,
+          20.0
+      ],
+      "waypoints": [
+          [
+              21.0,
+              21.0
+          ],
+          [
+              22.0,
+              22.0
+          ]
+      ],
+      "end_location": [
+          23.0,
+          23.0
+      ],
+      "creation_date": "2022-04-26 13:26:41.228426+00:00",
+      "start_date": "2022-04-16 13:26:41.228426+00:00"
+  }
 ];
 
 const Map = () => {
@@ -27,16 +61,48 @@ const Map = () => {
     var markerObject = {
         lat:  users[i].location[0],
         lng:  users[i].location[1],
-        icon: users[i].icon
+        icon: user_icon
     }
     markerList.push(markerObject)
   } 
+
+  // List of waypoint markers
+  const waypointMarkerList = [];
+  for (var j = 0; j < event_locations[0].waypoints.length; j++){
+    var markerObjectWaypoints = {
+      lat:  event_locations[0].waypoints[j][0],
+      lng:  event_locations[0].waypoints[j][1],
+      icon: med_point  
+    }
+    waypointMarkerList.push(markerObjectWaypoints)
+  }
+
+  // starting marker
+  var startMarker = {
+    lat:  event_locations[0].start_location[0],
+    lng:  event_locations[0].start_location[1],
+    icon: start_point  
+  } 
+  waypointMarkerList.push(startMarker)
+
+  // ending  marker
+  var endMarker = {
+    lat:  event_locations[0].end_location[0],
+    lng:  event_locations[0].end_location[1],
+    icon: end_point  
+  } 
+  waypointMarkerList.push(endMarker)
+  
 
   useEffect(() => {
     googleMap = initGoogleMap();
     var bounds = new window.google.maps.LatLngBounds();
     markerList.map(x => {
       const marker = createMarker(x);
+      bounds.extend(marker.position);
+    });
+    waypointMarkerList.map(x => {
+      const marker = CreateMarkerWaypoints(x);
       bounds.extend(marker.position);
     });
     googleMap.fitBounds(bounds); 
@@ -50,20 +116,31 @@ const Map = () => {
     });
   }
  
-  // create marker on map 
+  // create user markers on map 
   const createMarker = (markerObj) => new window.google.maps.Marker({
     position: { lat: markerObj.lat, lng: markerObj.lng },
     map: googleMap,
     icon: {
       url: markerObj.icon,
       // set marker height and width
-      scaledSize: new window.google.maps.Size(50, 50)
+      scaledSize: new window.google.maps.Size(24, 24)
+    }
+  });
+
+  // create waypoint markers on map 
+  const CreateMarkerWaypoints = (markerObj) => new window.google.maps.Marker({
+    position: { lat: markerObj.lat, lng: markerObj.lng },
+    map: googleMap,
+    icon: {
+      url: markerObj.icon,
+      // set marker height and width
+      scaledSize: new window.google.maps.Size(30, 30)
     }
   });
  
   return <div
     ref={googleMapRef}
-    style={{ width: 1000, height: 1650 }}
+    style={{ width: 1000, height: 850 }}
   />
 }
  
