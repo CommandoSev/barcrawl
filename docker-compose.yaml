@@ -29,5 +29,15 @@ services:
       postgresservice:
         condition: service_healthy
 
+  webappservice:
+    image: webappservice-image
+    build:
+      context: .
+      dockerfile: webApp/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - microservices-net
+
 networks:
   microservices-net: {}
