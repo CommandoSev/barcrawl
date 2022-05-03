@@ -7,6 +7,9 @@ import user_icon from '../images/example_user_icon.png';
 
 
 // test users object, replace this with users from database
+
+// managerservice:5433/get_attendee_locations?event_id=________
+
 const users = [{"user_id": 2,
                 "username": "Bob",
                 "icon": '',
