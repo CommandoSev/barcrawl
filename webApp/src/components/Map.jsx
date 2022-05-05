@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import end_point from '../images/Red_circle.png';
 import med_point from '../images/Grey_circle.png';
 import start_point from '../images/Green_circle.png';
@@ -55,6 +55,22 @@ const event_locations = [
 ];
 
 const Map = () => {
+  
+  var eventId = 'event_id=6cbedd47-c97e-44ba-b235-d89f8934a542'
+  
+  const [users, setUsers] = useState(''); 
+  useEffect(() => {
+    try{
+    fetch(`http://127.0.0.1:5433/get_attendee_locations?event_id=${eventId}`)
+        .then(response => console.log(response))
+        .then(data => setUsers(data));
+    }
+    catch(e){
+      console.log(e)
+    }  
+  })
+  
+  
   const googleMapRef = useRef(null);
   let googleMap = null;
 
