@@ -1,5 +1,6 @@
 
 from flask import Flask, request, Response
+from flask_cors import CORS
 import sqlalchemy as sql
 from sqlalchemy import text, insert
 from datetime import datetime, timedelta
@@ -11,6 +12,7 @@ engine = sql.create_engine(DATABASE_URL)
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/get_events", methods=['GET'])
